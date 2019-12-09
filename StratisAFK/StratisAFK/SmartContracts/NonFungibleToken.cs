@@ -24,13 +24,7 @@ public class StratisCollectible : SmartContract
 
     public StratisCollectible(ISmartContractState state) : base(state)
     {
-        Assert(Message.Value == 0); // Don't want to lose any funds
 
-        // Assign 3 NFTs to the creator.
-        SetOwner(1, Message.Sender);
-        SetOwner(2, Message.Sender);
-        SetOwner(3, Message.Sender);
-        SetBalance(Message.Sender, 3);
     }
 
     /// <summary>

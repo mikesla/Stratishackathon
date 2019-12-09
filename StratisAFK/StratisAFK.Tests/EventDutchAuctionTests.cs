@@ -10,18 +10,28 @@ using Stratis.SmartContracts.Networks;
 using Stratis.SmartContracts.RuntimeObserver;
 using Xunit;
 using Stratis.SmartContracts;
+using Stratis.SmartContracts.CLR.Compilation;
+using Stratis.SmartContracts.CLR.Loader;
+using System.Runtime.Loader;
+using Stratis.SmartContracts.CLR.Decompilation;
+using CSharpFunctionalExtensions;
 
 namespace StratisAFK.Tests
 {
-    public class StandardTokenTests
+    public class EventDutchAuctionTests
     {
+
+
+
+
         private readonly Address TestAddress,ta2,ta3,ta4,ta5;
         private TestSmartContractState smartContractState;
         private const ulong Balance = 0;
         private const ulong GasLimit = 10000;
         private const ulong Value = 0;
-        StandardToken contract;
-        public StandardTokenTests()
+        EventDutchAuction contract;
+   
+        public EventDutchAuctionTests()
         {
                         var network = new SmartContractsRegTest();
 
@@ -56,39 +66,50 @@ namespace StratisAFK.Tests
                 null
             );
             ulong totalSupply = 1000_000; string name = "TestToken"; string symbol = "TST";
-            this.contract = new StandardToken(this.smartContractState, totalSupply, name, symbol);
-
+            this.contract = new EventDutchAuction(this.smartContractState);
         }
 
 
         [Fact]
-        public void TestBidding()
+        public void TestAuction()
         {
 
-            this.contract.TransferTo(this.ta2, 1000);
+
+            //-------------------------------------------------------
+
+            ((TestMessage)this.smartContractState.Message).Value = 102;
+            ((TestMessage)this.smartContractState.Message).Sender = ta2;
+            ((TestBlock)this.smartContractState.Block).Number = 1;
+            var sdf = this.contract.GetCurrentPrice();
+            ((TestBlock)this.smartContractState.Block).Number = 2000;
+            var asf  = this.contract.GetCurrentPrice();
 
 
-            var asf = this.contract.GetBalance(this.TestAddress);
+            var dsfa = this.contract.AddressBidded;
+            var dsfas =this.contract.TicketIdByAddress;
+            this.contract.BuyTicket();
+          
 
-            this.contract.TransferTo(this.ta3, 1000);
+            ((TestMessage)this.smartContractState.Message).Value = 20;
+            ((TestMessage)this.smartContractState.Message).Sender = ta3;
+            this.contract.BuyTicket();
+
+            ((TestMessage)this.smartContractState.Message).Value = 30;
+            ((TestMessage)this.smartContractState.Message).Sender = ta4;
+            this.contract.BuyTicket();
+
+            //((TestMessage)this.smartContractState.Message).Value = 50;
+            //((TestMessage)this.smartContractState.Message).Sender = ta5;
+            //this.contract.BuyTicket();
+
+            //var sdaf = 253;
+            ((TestMessage)this.smartContractState.Message).Value = 20;
+            ((TestMessage)this.smartContractState.Message).Sender = ta3;
+            this.contract.GetOverbid();
+
+   
 
 
-            var asf3 = this.contract.GetBalance(this.TestAddress);
-
-
-            this.contract.TransferTo(this.ta4, 1000);
-
-
-            var as4f = this.contract.GetBalance(this.TestAddress);
-
-
-
-            var asf679 = this.contract.GetBalance(this.ta2);
         }
-
-
     }
-
-
-
 }
