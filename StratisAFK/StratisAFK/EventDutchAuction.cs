@@ -12,10 +12,11 @@ public class EventDutchAuction : SmartContract
     {
         TotalSupply = 0;
         ContractOwner = Message.Sender;
-        AuctionStartBlock = 1;
-        AuctionEndBlock = 5000;
-        EndPrice = 2*10^8;
-        MaxPrice = 10*10^8;
+        AuctiontBlockDuration = 5000;
+        AuctionStartBlock = Block.Number;
+        AuctionEndBlock = Block.Number +AuctiontBlockDuration; 
+        EndPrice = 1000000000;
+        MaxPrice = 2000000000;
         TicketsAmount = 3;
 
     }
@@ -61,6 +62,13 @@ public class EventDutchAuction : SmartContract
     {
         get => PersistentState.GetUInt64(nameof(this.MaxPrice));
         private set => PersistentState.SetUInt64(nameof(this.MaxPrice), value);
+    }
+
+    /// <inheritdoc />
+    public ulong AuctiontBlockDuration
+    {
+        get => PersistentState.GetUInt64(nameof(this.AuctiontBlockDuration));
+        private set => PersistentState.SetUInt64(nameof(this.AuctiontBlockDuration), value);
     }
 
     /// <inheritdoc />
@@ -196,7 +204,7 @@ public class EventDutchAuction : SmartContract
 
     {
         ulong blocksPassed = Block.Number - AuctionStartBlock;
-        ulong currentPrice = MaxPrice -  (blocksPassed * (MaxPrice  - EndPrice)*AuctionEndBlock / (AuctionEndBlock- AuctionStartBlock))/ AuctionEndBlock;
+        ulong currentPrice = MaxPrice -  blocksPassed * (MaxPrice  - EndPrice) / (AuctionEndBlock- AuctionStartBlock) ;
         return currentPrice;
     }
 
@@ -205,10 +213,10 @@ public class EventDutchAuction : SmartContract
 
     {
         Assert(fromBid <= toBid, "bids window should be correct");
-        if (TicketsAmount <= toBid)
-            toBid = TicketsAmount;
+        if (TotalSupply<= toBid)
+            toBid = TotalSupply;
 
-        for (ulong i = fromBid; i < toBid; i++)
+        for (ulong i = fromBid; i <= toBid; i++)
         {
             GetOverbid(i);
         }
@@ -216,7 +224,7 @@ public class EventDutchAuction : SmartContract
 
     }
 
-    private void GetOverbid(ulong ticketId)
+    public void GetOverbid(ulong ticketId)
     {
        
         var ticket = GetTicket(ticketId);
@@ -226,7 +234,8 @@ public class EventDutchAuction : SmartContract
         SetTicketOverbidReturned(ticketId);
         Transfer(ticket.bidderAddress, amountReturned);
         Transfer(ContractOwner, EndPrice);
-   }
+        Log(new Transfer { From = Address, To = ContractOwner, TokenId = ticketId });
+    }
 
     public void BuyTicket()
 

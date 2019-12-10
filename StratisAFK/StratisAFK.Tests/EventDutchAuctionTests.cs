@@ -103,9 +103,9 @@ namespace StratisAFK.Tests
             //this.contract.BuyTicket();
 
             //var sdaf = 253;
-            ((TestMessage)this.smartContractState.Message).Value = 20;
-            ((TestMessage)this.smartContractState.Message).Sender = ta3;
-            this.contract.GetOverbid();
+            //((TestMessage)this.smartContractState.Message).Value = 20;
+            //((TestMessage)this.smartContractState.Message).Sender = ta3;
+            //this.contract.GetOverbid();
 
    
 
