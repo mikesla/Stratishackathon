@@ -14,15 +14,24 @@ public class EventDutchAuction : SmartContract
         ContractOwner = Message.Sender;
         AuctionStartBlock = 1;
         AuctionEndBlock = 5000;
-        EndPrice = 2;
-        MaxPrice = 10;
+        EndPrice = 2*10^8;
+        MaxPrice = 10*10^8;
         TicketsAmount = 3;
 
     }
 
+
+
     public ulong BalanceOf(Address owner)
     {
         return PersistentState.GetUInt64($"Total:{owner}");
+    }
+
+
+
+    public ulong GetContractBalance
+    {
+        get => this.Balance;
     }
 
     /// <inheritdoc />
@@ -134,12 +143,45 @@ public class EventDutchAuction : SmartContract
     }
 
 
-    public TicketNew GetTicket(ulong tokenId)
+
+
+    //100 00 000 000
+
+
+    public bool GetTicketCheckIn()
+    {
+
+        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").checkedIn;
+
+    }
+
+    public ulong GetTicketBid()
+    {
+
+        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").value;
+
+    }
+    public bool GetTicketOverbidReturned()
+    {
+        
+        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").overbidReturned;
+
+    }
+
+    private TicketNew  GetTicket()
+    {
+        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}");
+
+    }
+
+    private  TicketNew GetTicket(ulong tokenId)
     {
         return PersistentState.GetStruct<TicketNew>($"Token{tokenId}");
 
     }
-    public void SetTicketOverbidReturned(ulong tokenId)
+
+
+    private void SetTicketOverbidReturned(ulong tokenId)
     {
 
         var tc = GetTicket(tokenId);
@@ -154,31 +196,37 @@ public class EventDutchAuction : SmartContract
 
     {
         ulong blocksPassed = Block.Number - AuctionStartBlock;
-        ulong currentPrice = MaxPrice -  (blocksPassed * (MaxPrice  - EndPrice)*1000000 / (AuctionEndBlock- AuctionStartBlock))/ 1000000;
+        ulong currentPrice = MaxPrice -  (blocksPassed * (MaxPrice  - EndPrice)*AuctionEndBlock / (AuctionEndBlock- AuctionStartBlock))/ AuctionEndBlock;
         return currentPrice;
     }
 
 
+    public void DistributeOverbids(ulong fromBid, ulong toBid)
 
-
-
-
-    public void GetOverbid()
-    
     {
-        var ticketId = TicketIdByAddress;
+        Assert(fromBid <= toBid, "bids window should be correct");
+        if (TicketsAmount <= toBid)
+            toBid = TicketsAmount;
+
+        for (ulong i = fromBid; i < toBid; i++)
+        {
+            GetOverbid(i);
+        }
 
 
+    }
+
+    private void GetOverbid(ulong ticketId)
+    {
+       
         var ticket = GetTicket(ticketId);
         Assert(!ticket.overbidReturned , "t");
-
         ticket.overbidReturned = true;
         var amountReturned = ticket.value - EndPrice;
         SetTicketOverbidReturned(ticketId);
-       
-        Transfer(Message.Sender, amountReturned);
-
-    }
+        Transfer(ticket.bidderAddress, amountReturned);
+        Transfer(ContractOwner, EndPrice);
+   }
 
     public void BuyTicket()
 
