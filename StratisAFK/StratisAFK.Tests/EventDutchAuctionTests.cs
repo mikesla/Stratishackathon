@@ -27,6 +27,7 @@ namespace StratisAFK.Tests
         private readonly Address TestAddress,ta2,ta3,ta4,ta5;
         private TestSmartContractState smartContractState;
         private const ulong Balance = 0;
+        private TestTransferResult Result = new TestTransferResult();
         private const ulong GasLimit = 10000;
         private const ulong Value = 0;
         EventDutchAuction contract;
@@ -54,6 +55,8 @@ namespace StratisAFK.Tests
             var getBalance = new Func<ulong>(() => Balance);
             var persistentState = new TestPersistentState();
             var serializer = new Serializer(new ContractPrimitiveSerializer(network));
+            var log = new TestContractLogger();
+    
             this.smartContractState = new TestSmartContractState(
                 block,
                 message,
@@ -63,7 +66,7 @@ namespace StratisAFK.Tests
                 null,
                 getBalance,
                 null,
-                null
+                log
             );
             ulong totalSupply = 1000_000; string name = "TestToken"; string symbol = "TST";
             this.contract = new EventDutchAuction(this.smartContractState);
@@ -73,11 +76,12 @@ namespace StratisAFK.Tests
         [Fact]
         public void TestAuction()
         {
-
+            ContractCompilationResult compilationResult = ContractCompiler.CompileFile("c:/work/stratis/CirrusSmartContracts/Testnet/Stratishackathon/StratisAFK/StratisAFK/EventDutchAuction.cs ");
+            Assert.True(compilationResult.Success);
 
             //-------------------------------------------------------
 
-            ((TestMessage)this.smartContractState.Message).Value = 102;
+            ((TestMessage)this.smartContractState.Message).Value = 10000000000;
             ((TestMessage)this.smartContractState.Message).Sender = ta2;
             ((TestBlock)this.smartContractState.Block).Number = 1;
             var sdf = this.contract.GetCurrentPrice();
@@ -90,11 +94,11 @@ namespace StratisAFK.Tests
             this.contract.BuyTicket();
           
 
-            ((TestMessage)this.smartContractState.Message).Value = 20;
+            ((TestMessage)this.smartContractState.Message).Value = 10000000000;
             ((TestMessage)this.smartContractState.Message).Sender = ta3;
             this.contract.BuyTicket();
 
-            ((TestMessage)this.smartContractState.Message).Value = 30;
+            ((TestMessage)this.smartContractState.Message).Value = 10000000000;
             ((TestMessage)this.smartContractState.Message).Sender = ta4;
             this.contract.BuyTicket();
 
@@ -106,6 +110,11 @@ namespace StratisAFK.Tests
             //((TestMessage)this.smartContractState.Message).Value = 20;
             //((TestMessage)this.smartContractState.Message).Sender = ta3;
             //this.contract.GetOverbid();
+
+
+            ((TestMessage)this.smartContractState.Message).Value = 10000000000;
+            ((TestMessage)this.smartContractState.Message).Sender = TestAddress;
+            this.contract.DistributeOverbids(1,3);
 
    
 

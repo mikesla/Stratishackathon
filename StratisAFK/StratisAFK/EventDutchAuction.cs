@@ -147,6 +147,8 @@ public class EventDutchAuction : SmartContract
 
         PersistentState.SetStruct<TicketNew>($"Token{tokenId}", tc);
         TotalSupply++;
+
+        Log(new Buy { TokenId = tokenId, To = address,data= "one more ticket(token)" });
         //PersistentState.SetAddress($"Token{tokenId}", address);
     }
 
@@ -232,8 +234,10 @@ public class EventDutchAuction : SmartContract
         ticket.overbidReturned = true;
         var amountReturned = ticket.value - EndPrice;
         SetTicketOverbidReturned(ticketId);
+
         Transfer(ticket.bidderAddress, amountReturned);
         Transfer(ContractOwner, EndPrice);
+
         Log(new Transfer { From = Address, To = ContractOwner, TokenId = ticketId });
     }
 
@@ -308,6 +312,21 @@ public class EventDutchAuction : SmartContract
         [Index]
         public Address To;
     }
+
+    public struct Buy
+    {
+        [Index]
+        public ulong TokenId;
+
+        [Index]
+        public Address To;
+
+
+        [Index]
+        public string data;
+
+    }
+
 
     public struct TicketNew
     {

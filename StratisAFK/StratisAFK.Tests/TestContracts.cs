@@ -30,7 +30,8 @@ namespace StratisAFK.Tests
             IInternalTransactionExecutor transactionExecutor,
             Func<ulong> getBalance,
             IInternalHashHelper hashHelper,
-            IContractLogger contractLogger)
+            IContractLogger contractLogger
+            )
         {
             this.Block = block;
             this.Message = message;
@@ -41,10 +42,13 @@ namespace StratisAFK.Tests
             this.GetBalance = getBalance;
             this.InternalHashHelper = hashHelper;
             this.ContractLogger = contractLogger;
+         
         }
 
         public IBlock Block { get; }
+
         public IMessage Message { get; }
+
         public IPersistentState PersistentState { get; }
         public ISerializer Serializer { get; }
         public IGasMeter GasMeter { get; }
@@ -52,6 +56,24 @@ namespace StratisAFK.Tests
         public Func<ulong> GetBalance { get; }
         public IInternalHashHelper InternalHashHelper { get; }
         public IContractLogger ContractLogger { get; }
+        public Func<Address, ulong, ITransferResult> Transfer { get; }
+    }
+
+
+    public class TestTransferResult : ITransferResult
+    {
+        public object ReturnValue { get => null; }
+        public bool Success { get => true; }
+        public void Transfer(Address addressTo, ulong amountToTransfer) { }
+    }
+
+    public class TestContractLogger : IContractLogger
+    {
+        public void Log<T>(ISmartContractState smartContractState, T toLog)
+            where T : struct
+        { 
+        }
+     
     }
 
     public class TestBlock : IBlock
