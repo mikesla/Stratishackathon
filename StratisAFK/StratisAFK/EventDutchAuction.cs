@@ -100,12 +100,26 @@ public class EventDutchAuction : SmartContract
     }
 
 
+    /// <inheritdoc />
+    public ulong GetTicketIdByAddress(Address address)
+    {
+        return PersistentState.GetUInt64($"TicketIds[{address}]");
+       
+    }
+
 
     /// <inheritdoc />
     public ulong TicketIdByAddress
     {
         get => PersistentState.GetUInt64($"TicketIds[{Message.Sender}]");
         private set => PersistentState.SetUInt64($"TicketIds[{Message.Sender}]", value);
+    }
+
+
+    /// <inheritdoc />
+    private void SetTickeId(Address address, ulong value)
+    {
+        PersistentState.SetUInt64($"TicketIds[{Message.Sender}]", value);
     }
 
 
@@ -139,13 +153,13 @@ public class EventDutchAuction : SmartContract
 
     private void SetOwner(ulong tokenId, Address address)
     {
-        TicketNew tc = new TicketNew();
+        Ticket tc = new Ticket();
         tc.value = Message.Value;
         tc.checkedIn = false;
         tc.overbidReturned = false;
         tc.bidderAddress = address;
 
-        PersistentState.SetStruct<TicketNew>($"Token{tokenId}", tc);
+        PersistentState.SetStruct<Ticket>($"Token{tokenId}", tc);
         TotalSupply++;
 
         Log(new Buy { TokenId = tokenId, To = address,data= "one more ticket(token)" });
@@ -161,32 +175,49 @@ public class EventDutchAuction : SmartContract
     public bool GetTicketCheckIn()
     {
 
-        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").checkedIn;
+        return PersistentState.GetStruct<Ticket>($"Token{TicketIdByAddress}").checkedIn;
 
     }
 
     public ulong GetTicketBid()
     {
 
-        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").value;
+        return PersistentState.GetStruct<Ticket>($"Token{TicketIdByAddress}").value;
 
     }
     public bool GetTicketOverbidReturned()
     {
         
-        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}").overbidReturned;
+        return PersistentState.GetStruct<Ticket>($"Token{TicketIdByAddress}").overbidReturned;
 
     }
 
-    private TicketNew  GetTicket()
+    private Ticket  GetTicket()
     {
-        return PersistentState.GetStruct<TicketNew>($"Token{TicketIdByAddress}");
+        return PersistentState.GetStruct<Ticket>($"Token{TicketIdByAddress}");
 
     }
 
-    private  TicketNew GetTicket(ulong tokenId)
+    /// <inheritdoc />
+    public ulong GetBalance(Address address)
     {
-        return PersistentState.GetStruct<TicketNew>($"Token{tokenId}");
+
+        var id = PersistentState.GetUInt64($"TicketIds[{address}]");
+        Ticket tc = PersistentState.GetStruct<Ticket>($"Token{id}");
+
+        var value = tc.bidderAddress;
+
+        if (value == address)
+            return 1;
+        else
+            return 0;
+
+    }
+
+
+    private Ticket GetTicket(ulong tokenId)
+    {
+        return PersistentState.GetStruct<Ticket>($"Token{tokenId}");
 
     }
 
@@ -196,7 +227,7 @@ public class EventDutchAuction : SmartContract
 
         var tc = GetTicket(tokenId);
         tc.overbidReturned = true;
-        PersistentState.SetStruct<TicketNew>($"Token{tokenId}", tc);
+        PersistentState.SetStruct<Ticket>($"Token{tokenId}", tc);
 
 
     }
@@ -274,6 +305,35 @@ public class EventDutchAuction : SmartContract
 
 
 
+
+    /// <inheritdoc />
+    public bool TransferTo(Address to, ulong amount)
+    {
+
+        Assert(Message.Value ==0); // Don't want to lose any funds
+        Assert(Message.Sender != to);
+
+        var tokenId = TicketIdByAddress;
+        Ticket tc = PersistentState.GetStruct<Ticket>($"Token{tokenId}");
+        Assert(tc.overbidReturned,"no possibilty send ticket before sale is ended and funds returned"); // Don't want to lose any funds
+        Assert(!tc.checkedIn, "ticket already used"); // Don't want to lose any funds
+
+        if (amount != 1)
+        {
+         
+            return false;
+        }
+
+        tc.bidderAddress = to;
+
+        PersistentState.SetUInt64($"TicketIds[{Message.Sender}]", 0);
+        PersistentState.SetUInt64($"TicketIds[{to}]", tokenId);
+
+        Log(new Transfer { From = Message.Sender, To = to });
+        PersistentState.SetStruct<Ticket>($"Token{tokenId}", tc);
+
+        return true;
+    }
     /// <summary>
     /// Note that this does not check the receiver is able to use the token (in case they are a contract without the necessary interface)
     /// </summary>
@@ -328,7 +388,7 @@ public class EventDutchAuction : SmartContract
     }
 
 
-    public struct TicketNew
+    public struct Ticket
     {
         public ulong value;
         public Address bidderAddress;

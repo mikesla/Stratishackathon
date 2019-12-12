@@ -116,7 +116,11 @@ namespace StratisAFK.Tests
             ((TestMessage)this.smartContractState.Message).Sender = TestAddress;
             this.contract.DistributeOverbids(1,3);
 
-   
+            ((TestMessage)this.smartContractState.Message).Value = 0;
+            ((TestMessage)this.smartContractState.Message).Sender = ta2;
+            this.contract.TransferTo(ta5, 1);
+
+
 
 
         }
