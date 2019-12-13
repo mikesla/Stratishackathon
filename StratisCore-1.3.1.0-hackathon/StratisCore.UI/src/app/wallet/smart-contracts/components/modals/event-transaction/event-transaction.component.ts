@@ -144,28 +144,28 @@ export class EventTransactionComponent implements OnInit {
 
     private createModel() {
 
-        if (this.mode === Mode.IssueToken) {
-            return {
-                amount: this.amount.value,
-                feeAmount: this.feeAmount.value,
-                gasPrice: this.gasPrice.value,
-                gasLimit: this.gasLimit.value,
-                //ulong ticketsAmount, string name, string symbol, ulong auctiontBlockDuration, ulong maxPrice, ulong minPrice
+        //if (this.mode === Mode.IssueToken) {
+        //    return {
+        //        amount: this.amount.value,
+        //        feeAmount: this.feeAmount.value,
+        //        gasPrice: this.gasPrice.value,
+        //        gasLimit: this.gasLimit.value,
+        //        //ulong ticketsAmount, string name, string symbol, ulong auctiontBlockDuration, ulong maxPrice, ulong minPrice
 
-                parameters: [
-                    `7#${this.ticketsAmount.value}`,
-                    `4#${this.tokenName.value}`,
-                    `4#${this.tokenSymbol.value.toUpperCase()}`,
-                    `7#${this.auctionDuration.value}`,
-                    `7#${this.maxPrice.value}`,
-                    `7#${this.minPrice.value}`,
-                ],
-                contractCode: this.newTokenByteCode,
-                password: this.password.value,
-                walletName: this.walletName,
-                sender: this.selectedSenderAddress
-            };
-        }
+        //        parameters: [
+        //            `7#${this.ticketsAmount.value}`,
+        //            `4#${this.tokenName.value}`,
+        //            `4#${this.tokenSymbol.value.toUpperCase()}`,
+        //            `7#${this.auctionDuration.value}`,
+        //            `7#${this.maxPrice.value*100000000}`,
+        //            `7#${this.minPrice.value*100000000}`,
+        //        ],
+        //        contractCode: this.newTokenByteCode,
+        //        password: this.password.value,
+        //        walletName: this.walletName,
+        //        sender: this.selectedSenderAddress
+        //    };
+        //}
 
         if (this.mode === Mode.IssueEvent) {
             return {
@@ -178,8 +178,8 @@ export class EventTransactionComponent implements OnInit {
                     `4#${this.tokenName.value}`,
                     `4#${this.tokenSymbol.value.toUpperCase()}`,
                     `7#${this.auctionDuration.value}`,
-                    `7#${this.maxPrice.value}`,
-                    `7#${this.minPrice.value}`,
+                    `7#${this.maxPrice.value * 100000000}`,
+                    `7#${this.minPrice.value * 100000000}`,
                 ],
                 contractCode: this.newEventByteCode,
                 password: this.password.value,

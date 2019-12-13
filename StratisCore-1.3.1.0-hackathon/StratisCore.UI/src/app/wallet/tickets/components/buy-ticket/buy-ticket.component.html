@@ -70,12 +70,12 @@
       <div class="form-group clearfix" data-toggle="tooltip" data-placement="right"
         title="The amount of tickets to send">
         <label for="amount">Value</label>
-        <input formControlName="ticketAmount" id="ticketAmount" type="number" step="1" class="form-control"
-          placeholder="Amount" [class.is-invalid]="ticketAmount.invalid && (ticketAmount.dirty || ticketAmount.touched)"
+        <input formControlName="amount" id="amount" type="number" step="1" class="form-control"
+          placeholder="Amount" [class.is-invalid]="amount.invalid && (amount.dirty || amount.touched)"
           min="0">
-        <div *ngIf="ticketAmount.errors" class="invalid-feedback">
-          <p *ngIf="ticketAmount.errors['min']">The number of tickets cannot be negative</p>
-          <p *ngIf="ticketAmount.errors['max']">The number of tickets exceeds your balance of {{ ticket.balance }} {{ ticket.ticker }}</p>
+        <div *ngIf="amount.errors" class="invalid-feedback">
+          <p *ngIf="amount.errors['min']">The amount of tickets cannot be negative</p>
+   
         </div>
       </div>
 

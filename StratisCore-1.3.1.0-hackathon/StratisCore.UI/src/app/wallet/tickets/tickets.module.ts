@@ -12,6 +12,8 @@ import { AddTicketComponent } from './components/add-ticket/add-ticket.component
 import { ProgressComponent } from './components/progress/progress.component';
 import { SendTicketComponent } from './components/send-ticket/send-ticket.component';
 import { BuyTicketComponent } from './components/buy-ticket/buy-ticket.component';
+import { DistributeRewardComponent } from './components/distribute-reward/distribute-reward.component';
+
 import { TicketsComponent } from './components/tickets.component';
 import { Log } from './services/logger.service';
 import { StorageService } from './services/storage.service';
@@ -30,6 +32,7 @@ import { SmartContractsService } from '../smart-contracts/smart-contracts.servic
         AddTicketComponent,
         SendTicketComponent,
         BuyTicketComponent,
+        DistributeRewardComponent,
         ProgressComponent
     ],
 
@@ -39,6 +42,7 @@ import { SmartContractsService } from '../smart-contracts/smart-contracts.servic
         BuyTicketComponent,
         TransactionComponent,
         EventTransactionComponent,
+        DistributeRewardComponent,
         ProgressComponent
     ]
 })

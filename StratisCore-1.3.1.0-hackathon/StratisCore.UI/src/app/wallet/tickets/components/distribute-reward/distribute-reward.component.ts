@@ -7,15 +7,15 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SmartContractsService } from 'src/app/wallet/smart-contracts/smart-contracts.service';
 
 @Component({
-    selector: 'app-buy-ticket',
-    templateUrl: './buy-ticket.component.html',
-    styleUrls: ['./buy-ticket.component.css']
+    selector: 'app-distribute-reward',
+    templateUrl: './distribute-reward.component.html',
+    styleUrls: ['./distribute-reward.component.css']
 })
 @Mixin([Disposable])
-export class BuyTicketComponent implements OnInit {
+export class DistributeRewardComponent implements OnInit {
 
     @Input()
-    selectedBuyerAddress: string;
+    selectedSenderAddress: string;
 
     @Input()
     ticket: SavedTicket;
@@ -32,7 +32,7 @@ export class BuyTicketComponent implements OnInit {
     gasPrice: FormControl;
     gasLimit: FormControl;
     contractAddress: FormControl;
-    recipientAddress: FormControl;
+
     password: FormControl;
     coinUnit: string;
     loading: boolean;
@@ -44,17 +44,16 @@ export class BuyTicketComponent implements OnInit {
     gasPriceMinimum = 1;
     gasPriceMaximum = 10000;
     transactionForm: FormGroup;
-    ticketAmount: FormControl;
-    amount: FormControl;
 
+    fromId: FormControl;
+    toId: FormControl;
     constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService) { }
 
     ngOnInit() {
-        this.title = 'Buy ticket ' + this.ticket.ticker;
+        this.title = 'Distribute rewards ' + this.ticket.ticker;
         this.registerControls();
         this.contractAddress.setValue(this.ticket.address);
         this.contractAddress.disable();
-
     }
 
     closeClicked() {
@@ -64,18 +63,19 @@ export class BuyTicketComponent implements OnInit {
     private createModel() {
 
         return {
-            amount: this.amount.value,
+            amount: 0,
             contractAddress: this.ticket.address,
             feeAmount: this.feeAmount.value,
             gasPrice: this.gasPrice.value,
             gasLimit: this.gasLimit.value,
             parameters: [
-
+                `7#${this.fromId.value}`,
+                `7#${this.toId.value}`
             ],
-            methodName: 'BuyTicket',
+            methodName: 'DistributeOverbids',
             password: this.password.value,
             walletName: this.walletName,
-            sender: this.selectedBuyerAddress,
+            sender: this.selectedSenderAddress
         };
     }
 
@@ -85,14 +85,14 @@ export class BuyTicketComponent implements OnInit {
 
         this.loading = true;
 
-        this.title = 'Buying ticket ' + this.ticket.ticker + '...';
+        this.title = 'Distributing  rewards and overbided funds ' + this.ticket.ticker + '...';
 
         // We don't need an observable here so let's treat it as a promise.
         this.smartContractsService.PostCall(result)
             .toPromise()
             .then(callResponse => {
                 this.loading = false;
-                this.activeModal.close({ request: result, callResponse, amount: 1, recipientAddress: this.selectedBuyerAddress });
+                this.activeModal.close({ request: result, callResponse, toId: this.toId.value, fromId: this.fromId.value });
             },
                 error => {
                     this.loading = false;
@@ -124,8 +124,9 @@ export class BuyTicketComponent implements OnInit {
 
         const gasLimitValidator = (gasCallLimitMinimumValidator);
 
-        this.ticketAmount = new FormControl(0, []);
-        this.amount = new FormControl(1, []);
+
+        this.fromId = new FormControl(1, [Validators.required, Validators.min(1)]);
+        this.toId = new FormControl(10, [Validators.required, Validators.min(1)]);
         this.feeAmount = new FormControl(0.001, [Validators.required, amountValidator, Validators.min(0)]);
         // tslint:disable-next-line:max-line-length
         this.gasPrice = new FormControl(100, [Validators.required, integerValidator, Validators.pattern('^[+]?([0-9]{0,})*[.]?([0-9]{0,2})?$'), gasPriceTooLowValidator, gasPriceTooHighValidator, Validators.min(0)]);
@@ -134,17 +135,17 @@ export class BuyTicketComponent implements OnInit {
         this.parameters = new FormArray([]);
         this.password = new FormControl('', [Validators.required, Validators.nullValidator]);
         this.contractAddress = new FormControl('', [Validators.required, Validators.nullValidator]);
-        this.recipientAddress = new FormControl('', []);
         this.transactionForm = new FormGroup({
             feeAmount: this.feeAmount,
             gasPrice: this.gasPrice,
             gasLimit: this.gasLimit,
             parameters: this.parameters,
-            ticketAmount: this.ticketAmount,
+          
             contractAddress: this.contractAddress,
-            recipientAddress: this.recipientAddress,
+            
             password: this.password,
-            amount: this.amount
+            fromId: this.fromId,
+            toId: this.toId
         });
     }
 }

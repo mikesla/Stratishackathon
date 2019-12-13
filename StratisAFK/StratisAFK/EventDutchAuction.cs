@@ -271,6 +271,8 @@ public class EventDutchAuction : SmartContract
     public void DistributeOverbids(ulong fromBid, ulong toBid)
 
     {
+
+        
         Assert(fromBid <= toBid, "bids window should be correct");
         if (TotalSupply<= toBid)
             toBid = TotalSupply;
