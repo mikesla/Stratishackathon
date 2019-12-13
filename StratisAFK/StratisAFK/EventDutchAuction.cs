@@ -8,19 +8,50 @@ public class EventDutchAuction : SmartContract
 
 
 
-    public EventDutchAuction(ISmartContractState state) : base(state)
+    public EventDutchAuction(ISmartContractState state,ulong ticketsAmount, string name, string symbol,ulong auctiontBlockDuration,ulong maxPrice,ulong minPrice) : base(state)
     {
+        //TotalSupply = 0;
+        //ContractOwner = Message.Sender;
+        //AuctiontBlockDuration = auctiontBlockDuration;
+        //AuctionStartBlock = Block.Number;
+        //AuctionEndBlock = Block.Number +AuctiontBlockDuration; 
+        //EndPrice = 1000000000;
+        //MaxPrice = 2000000000;
+        //TicketsAmount = 3;
+
         TotalSupply = 0;
         ContractOwner = Message.Sender;
-        AuctiontBlockDuration = 5000;
+        EndPrice = minPrice;
+        MaxPrice = maxPrice;
+        AuctiontBlockDuration = auctiontBlockDuration;
         AuctionStartBlock = Block.Number;
         AuctionEndBlock = Block.Number +AuctiontBlockDuration; 
-        EndPrice = 1000000000;
-        MaxPrice = 2000000000;
-        TicketsAmount = 3;
+        this.TicketsAmount = ticketsAmount;
+        this.Name = name;
+        this.Symbol = symbol;
+
 
     }
 
+
+    public string Symbol
+    {
+        get => PersistentState.GetString(nameof(this.Symbol));
+        set => PersistentState.SetString(nameof(this.Symbol), value);
+    }
+
+    public string Name
+    {
+        get => PersistentState.GetString(nameof(this.Name));
+        private set => PersistentState.SetString(nameof(this.Name), value);
+    }
+
+    /// <inheritdoc />
+    public ulong TotalSupply
+    {
+        get => PersistentState.GetUInt64(nameof(this.TotalSupply));
+        private set => PersistentState.SetUInt64(nameof(this.TotalSupply), value);
+    }
 
 
     public ulong BalanceOf(Address owner)
@@ -35,12 +66,7 @@ public class EventDutchAuction : SmartContract
         get => this.Balance;
     }
 
-    /// <inheritdoc />
-    public ulong TotalSupply
-    {
-        get => PersistentState.GetUInt64(nameof(this.TotalSupply));
-        private set => PersistentState.SetUInt64(nameof(this.TotalSupply), value);
-    }
+
 
     /// <inheritdoc />
     public ulong TicketsAmount

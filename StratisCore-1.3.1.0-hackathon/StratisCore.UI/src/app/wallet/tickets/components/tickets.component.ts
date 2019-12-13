@@ -8,7 +8,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { forkJoin, interval, Observable, of, ReplaySubject, Subject, throwError } from 'rxjs';
 import { catchError, first, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
-import { Mode, TransactionComponent } from '../../smart-contracts/components/modals/transaction/transaction.component';
+import { Mode, EventTransactionComponent } from '../../smart-contracts/components/modals/event-transaction/event-transaction.component';
 import { SmartContractsServiceBase } from '../../smart-contracts/smart-contracts.service';
 import { Disposable } from '../models/disposable';
 import { Mixin } from '../models/mixin';
@@ -169,11 +169,11 @@ export class TicketsComponent implements OnInit, OnDestroy, Disposable {
   }
 
   issueTicket() {
-    const modal = this.modalService.open(TransactionComponent, { backdrop: 'static', keyboard: false });
-    (<TransactionComponent>modal.componentInstance).mode = Mode.IssueEvent;
-    (<TransactionComponent>modal.componentInstance).selectedSenderAddress = this.selectedAddress;
-    (<TransactionComponent>modal.componentInstance).balance = this.balance;
-    (<TransactionComponent>modal.componentInstance).coinUnit = this.coinUnit;
+    const modal = this.modalService.open(EventTransactionComponent, { backdrop: 'static', keyboard: false });
+    (<EventTransactionComponent>modal.componentInstance).mode = Mode.IssueEvent;
+    (<EventTransactionComponent>modal.componentInstance).selectedSenderAddress = this.selectedAddress;
+    (<EventTransactionComponent>modal.componentInstance).balance = this.balance;
+    (<EventTransactionComponent>modal.componentInstance).coinUnit = this.coinUnit;
     modal.result.then(value => {
       if (!value || !value.symbol || !value.transactionHash || !value.name) {
         return;

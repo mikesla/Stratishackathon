@@ -6,6 +6,7 @@ import { SharedModule } from '@shared/shared.module';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { TransactionComponent } from '../smart-contracts/components/modals/transaction/transaction.component';
+import { EventTransactionComponent } from '../smart-contracts/components/modals/event-transaction/event-transaction.component';
 import { SmartContractsModule } from '../smart-contracts/smart-contracts.module';
 import { AddTicketComponent } from './components/add-ticket/add-ticket.component';
 import { ProgressComponent } from './components/progress/progress.component';
@@ -18,26 +19,27 @@ import { TicketsService } from './services/tickets.service';
 import { SmartContractsService } from '../smart-contracts/smart-contracts.service';
 
 @NgModule({
-  imports: [
-    CommonModule, NgbModalModule, ClipboardModule, FormsModule, ReactiveFormsModule, SharedModule, SmartContractsModule.forRoot()
-  ],
+    imports: [
+        CommonModule, NgbModalModule, ClipboardModule, FormsModule, ReactiveFormsModule, SharedModule, SmartContractsModule.forRoot()
+    ],
 
-  providers: [TicketsService, StorageService, Log, SmartContractsService],
+    providers: [TicketsService, StorageService, Log, SmartContractsService],
 
-  declarations: [
-    TicketsComponent,
-    AddTicketComponent,
-    SendTicketComponent,
-    BuyTicketComponent,
-    ProgressComponent
-  ],
+    declarations: [
+        TicketsComponent,
+        AddTicketComponent,
+        SendTicketComponent,
+        BuyTicketComponent,
+        ProgressComponent
+    ],
 
-  entryComponents: [
-    AddTicketComponent,
-    SendTicketComponent,
-    BuyTicketComponent,
-    TransactionComponent,
-    ProgressComponent
-  ]
+    entryComponents: [
+        AddTicketComponent,
+        SendTicketComponent,
+        BuyTicketComponent,
+        TransactionComponent,
+        EventTransactionComponent,
+        ProgressComponent
+    ]
 })
 export class TicketsModule { }

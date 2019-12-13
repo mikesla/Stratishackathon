@@ -68,8 +68,14 @@ namespace StratisAFK.Tests
                 null,
                 log
             );
-            ulong totalSupply = 1000_000; string name = "TestToken"; string symbol = "TST";
-            this.contract = new EventDutchAuction(this.smartContractState);
+            ulong totalSupply = 1000_000; 
+            ulong ticketsAmount = 3;
+            string name = "New Event";
+            string symbol = "ENT";
+            ulong auctiontBlockDuration = 5000;
+            ulong maxPrice= 2000000000;
+            ulong minPrice = 1000;
+            this.contract = new EventDutchAuction(this.smartContractState,ticketsAmount,name,symbol,auctiontBlockDuration,maxPrice,minPrice);
         }
 
 
