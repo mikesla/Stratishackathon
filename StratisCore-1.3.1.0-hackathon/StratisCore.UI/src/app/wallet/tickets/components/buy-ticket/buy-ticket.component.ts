@@ -5,6 +5,15 @@ import { Mixin } from '../../models/mixin';
 import { Disposable } from '../../models/disposable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SmartContractsService } from 'src/app/wallet/smart-contracts/smart-contracts.service';
+import { TicketPriceRequest } from '../../models/ticket-price-request';
+import { catchError, first, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { forkJoin, interval, Observable, of, ReplaySubject, Subject, throwError } from 'rxjs';
+import { Log } from '../../services/logger.service';
+import { ModalService } from '@shared/services/modal.service';
+import { TicketsService } from '../../services/tickets.service';
+import { Ticket } from '../../models/ticket';
+
+
 
 @Component({
     selector: 'app-buy-ticket',
@@ -15,7 +24,7 @@ import { SmartContractsService } from 'src/app/wallet/smart-contracts/smart-cont
 export class BuyTicketComponent implements OnInit {
 
     @Input()
-    selectedBuyerAddress: string;
+    selectedSenderAddress: string;
 
     @Input()
     ticket: SavedTicket;
@@ -47,7 +56,12 @@ export class BuyTicketComponent implements OnInit {
     ticketAmount: FormControl;
     amount: FormControl;
 
-    constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService) { }
+    ticketPrice= 0;
+
+    constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService, private genericModalService: ModalService, private ticketService: TicketsService)
+    {
+
+    }
 
     ngOnInit() {
         this.title = 'Buy ticket ' + this.ticket.ticker;
@@ -55,6 +69,30 @@ export class BuyTicketComponent implements OnInit {
         this.contractAddress.setValue(this.ticket.address);
         this.contractAddress.disable();
 
+        this.ticketService.GetTicketPrice(new TicketPriceRequest(this.contractAddress.value, this.selectedSenderAddress))
+            .pipe(
+                catchError(error => {
+                    this.showApiError(`Error retrieving price. ${error}`);
+                    return of(0);
+                }),
+                take(1)
+            )
+            .subscribe(ticketPrice => this.setTicketPrice(ticketPrice));
+
+    }
+
+    setTicketPrice(ticketPrice: number) {
+        this.ticketPrice=ticketPrice/100000000;
+    }
+
+    private updateTicketPrice(tickets: SavedTicket[]) {
+
+
+    }
+
+
+    showApiError(error: string) {
+        this.genericModalService.openModal('Error', error);
     }
 
     closeClicked() {
@@ -75,7 +113,7 @@ export class BuyTicketComponent implements OnInit {
             methodName: 'BuyTicket',
             password: this.password.value,
             walletName: this.walletName,
-            sender: this.selectedBuyerAddress,
+            sender: this.selectedSenderAddress,
         };
     }
 
@@ -92,7 +130,7 @@ export class BuyTicketComponent implements OnInit {
             .toPromise()
             .then(callResponse => {
                 this.loading = false;
-                this.activeModal.close({ request: result, callResponse, amount: 1, recipientAddress: this.selectedBuyerAddress });
+                this.activeModal.close({ request: result, callResponse, amount: 1, recipientAddress: this.selectedSenderAddress });
             },
                 error => {
                     this.loading = false;
@@ -125,6 +163,7 @@ export class BuyTicketComponent implements OnInit {
         const gasLimitValidator = (gasCallLimitMinimumValidator);
 
         this.ticketAmount = new FormControl(0, []);
+       // this.ticketPrice = new FormControl(0, []);
         this.amount = new FormControl(1, []);
         this.feeAmount = new FormControl(0.001, [Validators.required, amountValidator, Validators.min(0)]);
         // tslint:disable-next-line:max-line-length
@@ -144,7 +183,8 @@ export class BuyTicketComponent implements OnInit {
             contractAddress: this.contractAddress,
             recipientAddress: this.recipientAddress,
             password: this.password,
-            amount: this.amount
+            amount: this.amount,
+           // ticketPrice: this.ticketPrice
         });
     }
 }

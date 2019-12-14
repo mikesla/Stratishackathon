@@ -10,6 +10,7 @@ import { Result, ResultStatus } from '../models/result';
 import { SavedTicket, Ticket } from '../models/ticket';
 import { TicketBalanceRequest } from '../models/ticket-balance-request';
 import { StorageService } from './storage.service';
+import { TicketPriceRequest } from '../models/ticket-price-request';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +74,11 @@ export class TicketsService {
       map(localExecutionresult => localExecutionresult.return ? localExecutionresult.return : 0)
     );
   }
+    GetTicketPrice(request: TicketPriceRequest): Observable<number> {
+        return this.LocalCall(request).pipe(
+            map(localExecutionresult => localExecutionresult.return ? localExecutionresult.return : 0)
+        );
+    }
 
   LocalCall(request: LocalCallRequest): Observable<LocalExecutionResult> {
     return this.apiService.localCall(request)

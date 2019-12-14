@@ -6,6 +6,7 @@ import { Disposable } from '../../models/disposable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SmartContractsService } from 'src/app/wallet/smart-contracts/smart-contracts.service';
 
+
 @Component({
     selector: 'app-distribute-reward',
     templateUrl: './distribute-reward.component.html',
@@ -27,6 +28,8 @@ export class DistributeRewardComponent implements OnInit {
 
     title: string;
 
+
+
     parameters: FormArray;
     feeAmount: FormControl;
     gasPrice: FormControl;
@@ -47,7 +50,18 @@ export class DistributeRewardComponent implements OnInit {
 
     fromId: FormControl;
     toId: FormControl;
-    constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService) { }
+
+    
+
+
+    constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService)
+    {
+ 
+
+    
+    }
+
+ 
 
     ngOnInit() {
         this.title = 'Distribute rewards ' + this.ticket.ticker;
@@ -108,9 +122,7 @@ export class DistributeRewardComponent implements OnInit {
                 });
     }
 
-    setTicketAmount(ticketBalance: number) {
-        this.ticketAmount.setValue(ticketBalance);
-    }
+
 
     private registerControls() {
         const amountValidator = control => Number(control.value) > this.balance ? { amountError: true } : null;

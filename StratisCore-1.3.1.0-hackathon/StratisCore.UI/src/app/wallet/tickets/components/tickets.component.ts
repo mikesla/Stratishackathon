@@ -254,7 +254,7 @@ export class TicketsComponent implements OnInit, OnDestroy, Disposable {
 
         const modal = this.modalService.open(BuyTicketComponent, { backdrop: 'static', keyboard: false });
         (<BuyTicketComponent>modal.componentInstance).walletName = this.walletName;
-        (<BuyTicketComponent>modal.componentInstance).selectedBuyerAddress = this.selectedAddress;
+        (<BuyTicketComponent>modal.componentInstance).selectedSenderAddress = this.selectedAddress;
         (<BuyTicketComponent>modal.componentInstance).balance = this.balance;
         (<BuyTicketComponent>modal.componentInstance).coinUnit = this.coinUnit;
         (<BuyTicketComponent>modal.componentInstance).ticket = item;

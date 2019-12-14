@@ -8,94 +8,106 @@
     </button>
   </div>
   <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" [hidden]="loading">
-    <div class="modal-body">
-      <div class="form-group clearfix">
-        <label for="">Sender</label>
-        <input class="form-control" [(ngModel)]="selectedSenderAddress" [ngModelOptions]="{standalone: true}"
-          [readonly]="true" />
-      </div>
-      <div class="float-right">Balance : <sc-balance data-toggle="tooltip" data-placement="top" title=""
-          data-original-title="Set maximum amount" [balance]="balance"
-          [coinUnit]="coinUnit"></sc-balance>
-      </div>
-      <div class="form-group clearfix" data-toggle="tooltip" data-placement="right"
-        title="The fee to send with this transaction ({{ coinUnit }}/bytes)">
-        <label for="feeAmount">Fee</label>
-        <input formControlName="feeAmount" id="feeAmount" type="number" step="0.01" class="form-control"
-          placeholder="Fee" [class.is-invalid]="feeAmount.invalid && (feeAmount.dirty || feeAmount.touched)" min="0">
-        <div *ngIf="feeAmount.errors" class="invalid-feedback">
-          <p *ngIf="feeAmount.errors['feeError']">Fee must be less than your balance</p>
-          <p *ngIf="feeAmount.errors['min']">The fee cannot be negative</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-6 clearfix" data-toggle="tooltip" data-placement="right"
-          title="The gas price to use with this transaction ({{ coinUnit }}/gas)">
-          <label for="gasPrice">Gas price</label>
-          <input formControlName="gasPrice" id="gasPrice" type="number" class="form-control" placeholder="Gas Price"
-            [class.is-invalid]="gasPrice.invalid && (gasPrice.dirty || gasPrice.touched)" min="0">
-          <div *ngIf="gasPrice.errors" class="invalid-feedback">
-            <p *ngIf="gasPrice.errors['gasPriceTooLowError']">Gas price must be greater than {{ gasPriceMinimum }}</p>
-            <p *ngIf="gasPrice.errors['gasPriceTooHighError']">Gas price must be less than {{ gasPriceMaximum }}</p>
-            <p *ngIf="gasPrice.errors['min']">Gas price cannot be negative</p>
+      <div class="modal-body">
+          <div class="form-group clearfix">
+              <label for="">Sender</label>
+              <input class="form-control" [(ngModel)]="selectedSenderAddress" [ngModelOptions]="{standalone: true}"
+                     [readonly]="true" />
           </div>
-        </div>
-        <div class="form-group col-6 clearfix" data-toggle="tooltip" data-placement="right"
-          title="The gas limit to use with this transaction">
-          <label for="gasLimit">Gas limit</label>
-          <input formControlName="gasLimit" id="gasLimit" type="number" class="form-control" placeholder="Gas Limit"
-            [class.is-invalid]="gasLimit.invalid && (gasLimit.dirty || gasLimit.touched)" min="0">
-          <div *ngIf="gasLimit.errors" class="invalid-feedback">
-            <p *ngIf="gasLimit.errors['gasCallLimitTooLowError']">Gas call limit must be greater than
-              {{ gasCallLimitMinimum }}</p>
-            <p *ngIf="gasLimit.errors['gasCreateLimitTooLowError']">Gas create limit must be greater than
-              {{ gasCreateLimitMinimum }}</p>
-            <p *ngIf="gasLimit.errors['gasLimitTooHighError']">Gas limit must be less than {{ gasLimitMaximum }}</p>
-            <p *ngIf="gasLimit.errors['min']">Gas limit cannot be negative</p>
+          <div class="float-right">
+              Balance : <sc-balance data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title="Set maximum amount" [balance]="balance"
+                                    [coinUnit]="coinUnit"></sc-balance>
           </div>
-        </div>
-      </div>
-      <div class="form-group clearfix">
-        <label for="recipientAddress">Ticket Recipient Address</label>
-        <input type="text" formControlName="recipientAddress" id="recipientAddress" class="form-control"
-          placeholder="Recipient Address" data-toggle="tooltip" data-placement="right"
-          title="The address to send the tickets to"
-          [class.is-invalid]="recipientAddress.invalid && (recipientAddress.dirty || recipientAddress.touched)">
-      </div>
-      <div class="float-right">Balance: 
-        <span class="btn-link no-underline">
-          <strong data-toggle="tooltip" data-placement="right" [title]="ticket.balance + ' ' + ticket.ticker" (click)="setTicketAmount(ticket.balance)">{{ ticket.balance }}</strong><small> {{ ticket.ticker }}</small>
-        </span>
-      </div>
-      <div class="form-group clearfix" data-toggle="tooltip" data-placement="right"
-        title="The amount of tickets to send">
-        <label for="amount">Value</label>
-        <input formControlName="amount" id="amount" type="number" step="1" class="form-control"
-          placeholder="Amount" [class.is-invalid]="amount.invalid && (amount.dirty || amount.touched)"
-          min="0">
-        <div *ngIf="amount.errors" class="invalid-feedback">
-          <p *ngIf="amount.errors['min']">The amount of tickets cannot be negative</p>
-   
-        </div>
-      </div>
+          <div class="form-group clearfix" data-toggle="tooltip" data-placement="right"
+               title="The fee to send with this transaction ({{ coinUnit }}/bytes)">
+              <label for="feeAmount">Fee</label>
+              <input formControlName="feeAmount" id="feeAmount" type="number" step="0.01" class="form-control"
+                     placeholder="Fee" [class.is-invalid]="feeAmount.invalid && (feeAmount.dirty || feeAmount.touched)" min="0">
+              <div *ngIf="feeAmount.errors" class="invalid-feedback">
+                  <p *ngIf="feeAmount.errors['feeError']">Fee must be less than your balance</p>
+                  <p *ngIf="feeAmount.errors['min']">The fee cannot be negative</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="form-group col-6 clearfix" data-toggle="tooltip" data-placement="right"
+                   title="The gas price to use with this transaction ({{ coinUnit }}/gas)">
+                  <label for="gasPrice">Gas price</label>
+                  <input formControlName="gasPrice" id="gasPrice" type="number" class="form-control" placeholder="Gas Price"
+                         [class.is-invalid]="gasPrice.invalid && (gasPrice.dirty || gasPrice.touched)" min="0">
+                  <div *ngIf="gasPrice.errors" class="invalid-feedback">
+                      <p *ngIf="gasPrice.errors['gasPriceTooLowError']">Gas price must be greater than {{ gasPriceMinimum }}</p>
+                      <p *ngIf="gasPrice.errors['gasPriceTooHighError']">Gas price must be less than {{ gasPriceMaximum }}</p>
+                      <p *ngIf="gasPrice.errors['min']">Gas price cannot be negative</p>
+                  </div>
+              </div>
+              <div class="form-group col-6 clearfix" data-toggle="tooltip" data-placement="right"
+                   title="The gas limit to use with this transaction">
+                  <label for="gasLimit">Gas limit</label>
+                  <input formControlName="gasLimit" id="gasLimit" type="number" class="form-control" placeholder="Gas Limit"
+                         [class.is-invalid]="gasLimit.invalid && (gasLimit.dirty || gasLimit.touched)" min="0">
+                  <div *ngIf="gasLimit.errors" class="invalid-feedback">
+                      <p *ngIf="gasLimit.errors['gasCallLimitTooLowError']">
+                          Gas call limit must be greater than
+                          {{ gasCallLimitMinimum }}
+                      </p>
+                      <p *ngIf="gasLimit.errors['gasCreateLimitTooLowError']">
+                          Gas create limit must be greater than
+                          {{ gasCreateLimitMinimum }}
+                      </p>
+                      <p *ngIf="gasLimit.errors['gasLimitTooHighError']">Gas limit must be less than {{ gasLimitMaximum }}</p>
+                      <p *ngIf="gasLimit.errors['min']">Gas limit cannot be negative</p>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group clearfix">
+              <label for="recipientAddress">Ticket Recipient Address</label>
+              <input type="text" formControlName="recipientAddress" id="recipientAddress" class="form-control"
+                     placeholder="Recipient Address" data-toggle="tooltip" data-placement="right"
+                     title="The address to send the tickets to"
+                     [class.is-invalid]="recipientAddress.invalid && (recipientAddress.dirty || recipientAddress.touched)">
+          </div>
+          <div class="float-right">
+              Current price:
+              <span class="btn-link no-underline">
+                  <strong data-toggle="tooltip" data-placement="right" [title]="ticketPrice">{{ ticketPrice }}&nbsp;</strong>
+              </span>
+          </div>
+          <div class="float-right">
+              Balance:
+              <span class="btn-link no-underline">
+                  <strong data-toggle="tooltip" data-placement="right" [title]="ticket.balance + ' ' + ticket.ticker" (click)="setTicketAmount(ticket.balance)">{{ ticket.balance }}</strong><small> {{ ticket.ticker }}&nbsp;</small>
+              </span>
+          </div>
+          <div class="form-group clearfix" data-toggle="tooltip" data-placement="right"
+               title="The amount of tickets to send">
+              <label for="amount">Value</label>
+              <input formControlName="amount" id="amount" type="number" step="1" class="form-control"
+                     placeholder="Amount" [class.is-invalid]="amount.invalid && (amount.dirty || amount.touched)"
+                     min="0">
+              <div *ngIf="amount.errors" class="invalid-feedback">
+                  <p *ngIf="amount.errors['min']">The amount of tickets cannot be negative</p>
 
-      <div class="form-group clearfix">
-        <label for="contractAddress">Contract Address</label>
-        <input type="text" formControlName="contractAddress" id="contractAddress" class="form-control"
-          placeholder="Contract Address" data-toggle="tooltip" data-placement="right"
-          title="The address of the recipient contract">
+              </div>
+          </div>
+
+          <div class="form-group clearfix">
+              <label for="contractAddress">Contract Address</label>
+              <input type="text" formControlName="contractAddress" id="contractAddress" class="form-control"
+                     placeholder="Contract Address" data-toggle="tooltip" data-placement="right"
+                     title="The address of the recipient contract">
+          </div>
+          <div class="form-group clearfix">
+              <label for="password">Wallet Password</label>
+              <input formControlName="password" id="password" type="password" class="form-control"
+                     placeholder="Wallet Password" [class.is-invalid]="password.invalid && (password.dirty || password.touched)"
+                     data-toggle="tooltip" data-placement="right" title="The password for the current wallet">
+              <div *ngIf="password.errors" class="invalid-feedback">
+                  <p *ngIf="password.errors['required']">Please enter the password for wallet {{ walletName }}</p>
+              </div>
+          </div>
+          <div *ngIf="apiError" class="text-danger">{{ apiError }}</div>
       </div>
-      <div class="form-group clearfix">
-        <label for="password">Wallet Password</label>
-        <input formControlName="password" id="password" type="password" class="form-control"
-          placeholder="Wallet Password" [class.is-invalid]="password.invalid && (password.dirty || password.touched)"
-          data-toggle="tooltip" data-placement="right" title="The password for the current wallet">
-        <div *ngIf="password.errors" class="invalid-feedback">
-          <p *ngIf="password.errors['required']">Please enter the password for wallet {{ walletName }}</p>
-        </div>
-      </div>
-      <div *ngIf="apiError" class="text-danger">{{ apiError }}</div>
-    </div>
 
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-light" data-dismiss="modal" (click)="closeClicked()">Cancel</button>
