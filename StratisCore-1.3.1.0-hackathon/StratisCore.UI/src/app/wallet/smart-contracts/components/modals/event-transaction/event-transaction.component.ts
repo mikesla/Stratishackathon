@@ -81,7 +81,7 @@ export class EventTransactionComponent implements OnInit {
             case Mode.IssueToken:
                 return this.loading ? 'Issuing Token' : 'Issue Token';
             case Mode.IssueEvent:
-                return this.loading ? 'Creating Event' : 'Create Event';
+                return this.loading ? 'Creating the Event' : 'Create the Event';
             default:
                 return 'Unknown';
         }
