@@ -267,6 +267,11 @@ public class EventDutchAuction : SmartContract
         return currentPrice;
     }
 
+    public ulong GetMinPrice()
+    {
+     
+        return EndPrice;
+    }
 
     public void DistributeOverbids(ulong fromBid, ulong toBid)
 
@@ -294,8 +299,8 @@ public class EventDutchAuction : SmartContract
         var amountReturned = ticket.value - EndPrice;
         SetTicketOverbidReturned(ticketId);
 
-        Transfer(ticket.bidderAddress, amountReturned);
-        Transfer(ContractOwner, EndPrice);
+        //Transfer(ticket.bidderAddress, amountReturned);
+        //Transfer(ContractOwner, EndPrice);
 
         Log(new Transfer { From = Address, To = ContractOwner, TokenId = ticketId });
     }

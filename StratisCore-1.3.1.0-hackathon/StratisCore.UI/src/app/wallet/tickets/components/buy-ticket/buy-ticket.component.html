@@ -74,6 +74,12 @@
               </span>
           </div>
           <div class="float-right">
+              Min price:
+              <span class="btn-link no-underline">
+                  <strong data-toggle="tooltip" data-placement="right" [title]="minPrice">{{ minPrice }}&nbsp;</strong>
+              </span>
+          </div>
+          <div class="float-right">
               Balance:
               <span class="btn-link no-underline">
                   <strong data-toggle="tooltip" data-placement="right" [title]="ticket.balance + ' ' + ticket.ticker" (click)="setTicketAmount(ticket.balance)">{{ ticket.balance }}</strong><small> {{ ticket.ticker }}&nbsp;</small>
@@ -112,7 +118,7 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-light" data-dismiss="modal" (click)="closeClicked()">Cancel</button>
       <button type="submit" data-toggle="modal" data-target="#" class="btn btn-stratis-green btn-block"
-        data-dismiss="modal" [disabled]="!transactionForm.valid" ngbAutofocus>Send Tickets</button>
+        data-dismiss="modal" [disabled]="!transactionForm.valid" ngbAutofocus>Buy Ticket</button>
     </div>
   </form>
   <div [hidden]="!loading" class="Loading col-2 mx-auto unset-left">

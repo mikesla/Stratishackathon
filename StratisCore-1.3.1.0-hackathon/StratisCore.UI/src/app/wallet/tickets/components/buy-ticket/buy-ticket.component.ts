@@ -56,7 +56,8 @@ export class BuyTicketComponent implements OnInit {
     ticketAmount: FormControl;
     amount: FormControl;
 
-    ticketPrice= 0;
+    ticketPrice = 0;
+    minPrice = 0;
 
     constructor(private activeModal: NgbActiveModal, private smartContractsService: SmartContractsService, private genericModalService: ModalService, private ticketService: TicketsService)
     {
@@ -69,7 +70,7 @@ export class BuyTicketComponent implements OnInit {
         this.contractAddress.setValue(this.ticket.address);
         this.contractAddress.disable();
 
-        this.ticketService.GetTicketPrice(new TicketPriceRequest(this.contractAddress.value, this.selectedSenderAddress))
+        this.ticketService.GetTicketPrice(new TicketPriceRequest(this.contractAddress.value, this.selectedSenderAddress,'GetCurrentPrice'))
             .pipe(
                 catchError(error => {
                     this.showApiError(`Error retrieving price. ${error}`);
@@ -77,12 +78,17 @@ export class BuyTicketComponent implements OnInit {
                 }),
                 take(1)
             )
-            .subscribe(ticketPrice => this.setTicketPrice(ticketPrice));
+            .subscribe(ticketPrice => this.ticketPrice = ticketPrice / 100000000);
 
-    }
-
-    setTicketPrice(ticketPrice: number) {
-        this.ticketPrice=ticketPrice/100000000;
+        this.ticketService.GetTicketPrice(new TicketPriceRequest(this.contractAddress.value, this.selectedSenderAddress, 'GetMinPrice'))
+            .pipe(
+                catchError(error => {
+                    this.showApiError(`Error retrieving price. ${error}`);
+                    return of(0);
+                }),
+                take(1)
+        )
+            .subscribe(minPrice => this.minPrice = minPrice / 100000000);
     }
 
     private updateTicketPrice(tickets: SavedTicket[]) {
