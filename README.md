@@ -27,7 +27,7 @@ npm install
 ## Run the UI in development mode
 
 #### 
-install and  run   Cirrus Core (Hackathon Edition) app. It alson run a node what we need to run this  version of app
+install and  run   Cirrus Core (Hackathon Edition) app. It runs a node what we need to run this  version of app
 https://academy.stratisplatform.com/SmartContracts/Tutorial1-LocalSidechain/creating-a-local-chain.html
 
 
