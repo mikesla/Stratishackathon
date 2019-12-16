@@ -159,6 +159,7 @@ export class TicketsComponent implements OnInit, OnDestroy, Disposable {
     addTicket() {
         const modal = this.modalService.open(AddTicketComponent, { backdrop: 'static', keyboard: false });
         (<AddTicketComponent>modal.componentInstance).tickets = this.availableTickets;
+        (<AddTicketComponent>modal.componentInstance).selectedSenderAddress = this.selectedAddress;
         modal.result.then(value => {
             if (value) {
 

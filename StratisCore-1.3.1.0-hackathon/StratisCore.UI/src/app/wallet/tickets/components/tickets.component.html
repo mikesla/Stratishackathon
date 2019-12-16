@@ -77,14 +77,14 @@
                 </td>
                 <td class="text-right col-2" scope="col">
                     <ng-container *ngIf="item.address">
-                        <button type="button" class="btn btn-sm btn-stratis-green" (click)="distributeReward(item)">
-                            <i class="icon lnr lnr-arrow-up-circle"></i> Finalize
-                        </button>&nbsp;
                         <button type="button" class="btn btn-sm btn-stratis-green" (click)="buy(item)">
                             <i class="icon lnr lnr-arrow-up-circle"></i> Buy
                         </button>&nbsp;
                         <button type="button" class="btn btn-sm btn-stratis-green" (click)="send(item)">
                             <i class="icon lnr lnr-arrow-up-circle"></i> Send
+                        </button>&nbsp;
+                        <button type="button" class="btn btn-sm btn-stratis-green" (click)="distributeReward(item)">
+                            <i class="icon lnr lnr-arrow-up-circle"></i> Finalize
                         </button>&nbsp;
                         <button type="button" class="btn btn-sm btn-danger" (click)="delete(item)">
                             <i class="icon lnr lnr-cross-circle"></i>
