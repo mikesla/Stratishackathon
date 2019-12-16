@@ -8,7 +8,7 @@ Download and install the latest Long Term Support (LTS) version of NodeJS at: ht
 Clone this repository locally:
 
 ``` bash
-git clone https://github.com/mikesla/Stratishackathon
+git clone https://github.com/mikesla/Stratishackathon.git
 ```
 
 Navigate to the StratisCore.UI folder in a terminal:
