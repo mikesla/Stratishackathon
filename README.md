@@ -49,3 +49,5 @@ This will compile the Angular code and spawn the Electron process.
 **The application is optimised. Only the files of /dist folder are included in the executable. Distributable packages can be found in the StratisCore.UI/app-builds/ folder**
 
 
+## How to use it
+https://www.youtube.com/watch?v=n0mUYnUBgqk&feature=youtu.be&t=77
